@@ -68,6 +68,6 @@ jQuery(document).ready(function(){
     jQuery('header[data-active-language!="none"][data-active-language!="all"] select > option:first-child').remove();
 
     /* move 'All' post types to end of list */
-    var $ul = jQuery('header[data-active-language!="none"][data-active-language!="all"] div > ul > li:nth-child(2) ul');
+    var $ul = jQuery('header[data-active-language!="none"][data-active-language!="all"] .searchandfilter > div > ul > li:nth-child(2) ul');
     $ul.children(':first').appendTo($ul);
 });
