@@ -63,4 +63,7 @@ jQuery(document).ready(function(){
 
     /* remove 'All languages' option from individual language pages */
     jQuery('header[data-active-language!="none"][data-active-language!="all"] select > option:first-child').remove();
+
+    /* select 'Audio' radio button on home page to prevent showing all resource types for all languages */
+    jQuery('header[data-active-language="none"] input[value="audio"]').prop('checked', true);
 });
