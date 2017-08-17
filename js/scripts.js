@@ -61,10 +61,13 @@ jQuery(document).ready(function(){
         }).prop('selected', true);
     });
 
+    /* select 'Audio' radio button on home page to prevent showing all resource types for all languages */
+    jQuery('header[data-active-language="none"] input[value=audio]').prop('checked', true);
+
     /* remove 'All languages' option from individual language pages */
     jQuery('header[data-active-language!="none"][data-active-language!="all"] select > option:first-child').remove();
 
-//header[data-active-language='none'] div > ul > li:nth-child(2) ul
-    /* select 'Audio' radio button on home page to prevent showing all resource types for all languages */
-    jQuery('header[data-active-language="none"] input[value=audio]').prop('checked', true);
+    /* move 'All' post types to end of list */
+    var $ul = jQuery('header[data-active-language!="none"][data-active-language!="all"] div > ul > li:nth-child(2) ul');
+    $ul.children(':first').appendTo($ul);
 });

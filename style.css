@@ -2267,13 +2267,8 @@ article.comment footer br {
 /* PINEDROP ADDITIONS */
 
 /* hide 'All post types' radio button on home page */
-/*header[data-active-language='none'] div > ul > li:nth-child(2) ul > li:first-child,
+header[data-active-language='none'] div > ul > li:nth-child(2) ul > li:first-child,
 header[data-active-language='all'] div > ul > li:nth-child(2) ul > li:first-child {
-	display: none;
-}*/
-
-header[data-active-language='none'] input[value='audio,video,person,image,resource'],
-header[data-active-language='all'] input[value='audio,video,person,image,resource'] {
 	display: none;
 }
 
