@@ -65,6 +65,5 @@ jQuery(document).ready(function(){
     jQuery('header[data-active-language!="none"][data-active-language!="all"] select > option:first-child').remove();
 
     /* select 'Audio' radio button on home page to prevent showing all resource types for all languages */
-    jQuery('header[data-active-language="none"] input[value="audio,video,person,image,resource"]).prop('disabled', true);
-    jQuery('header[data-active-language="none"] input[value="audio"]').prop('checked', true);
+    jQuery('header[data-active-language="none"] input[value="audio,video,person,image,resource"]).remove();
 });
