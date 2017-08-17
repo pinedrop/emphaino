@@ -1,0 +1,55 @@
+/* =Canvas
+----------------------------------------------- */
+body {
+	padding: 0 10px;
+	padding: 0 1rem;
+}
+
+#page {
+	width: auto;
+	max-width: 940px;
+	max-width: 94rem;
+	margin: 0 auto;
+}
+
+.content-area {
+	margin: 0 auto 30px;
+	margin: 0 auto 3rem;
+	max-width: 300px;
+	max-width: 30rem;
+}
+.single,
+.page,
+.one-col-excerpts,
+.one-col-full-posts,
+.no-js  {
+	.content-area {
+		max-width: 940px;
+		max-width: 94rem;
+	}
+}
+
+.site-footer {
+	clear: both;
+}
+
+.back-to-top {
+	display: none;
+	position: fixed;
+	bottom: 2rem;
+	right: 2rem;
+	height: 3rem;
+	width: 3rem;
+	line-height: 3rem;
+	text-align: center;
+	border-radius: 0.2rem;
+	background-color: rgba( 0, 0, 0, 0.3);
+	color: #fff;
+	font-size: 1.5rem;
+	&:hover {
+		background-color: rgba( 0, 0, 0, 0.6);
+	}
+	&:before {
+		font-weight: bold;
+	}
+}

@@ -1,0 +1,90 @@
+Changelog
+=========
+
+
+2015-05-01: Version 1.2.4
+-------------------------
+
+* Added localization in Spanish, German and Russian languages
+* Removed title tag from header.php and added theme support for 'title-tag'
+* Sanitization of customizer options
+* Added styles for .screen-reader-text
+* Screenshot updated to 880x660px image
+* Other minor changes, fixes and improvements
+
+
+2013-09-02: Version 1.2.3
+-------------------------
+
+* Added localization in Dutch and Turkish languages.
+* Minor fixes
+
+
+2013-06-19: Version 1.2.2
+-------------------------
+
+* Added localization in Polish language.
+
+
+2013-06-10: Version 1.2.1
+-------------------------
+
+* Fixed error in the sidebar option in theme customizer.
+
+
+2013-06-07: Version 1.2
+-----------------------
+
+* Sidebar widget area added. When widgets are added to this widget area, it appears as a sidebar in single posts and pages. Optionally this widget area can be enabled in blog home and archive pages too.
+* Enabled all post formats.
+* Added "Back to Top" button and an option to disable the button.
+* Added localization in French language.
+* Regenerated translation POT file.
+* Other minor fixes and improvements.
+
+
+2013-03-07: Version 1.1
+-----------------------
+
+* Widening content area for single post displays to match header width
+	* $content_width changed to 660 pixels
+* The theme now uses its own gallery styles
+* 'Featured image in full posts' defaults to 'on'
+
+
+2013-03-04: Version 1.0.4
+-------------------------
+
+* Enqueueing webfonts the right way
+* Minor fixes
+* A note about custom header image sizes in the readme
+
+
+2013-02-27: Version 1.0.3
+-------------------------
+
+* Fix for footer text display in default setup.
+
+
+2013-02-26: Version 1.0.2
+-------------------------
+
+* Fix for the post format icons :before entry title
+* Making use of the core bundled script 'jquery-masonry'
+* Bringing back footer credit links to footer.php
+* Regenerated translation POT file
+
+
+2013-02-12: Version 1.0.1
+-------------------------
+
+* Fixed link color issues in customizer
+* Fix to handle condition where avatars are turned off in 'Discussion Settings'
+* Updated screenshot
+* Merged changes from _s
+
+
+2013-02-04: Version 1.0
+-----------------------
+
+* Initial release.
