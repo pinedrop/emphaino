@@ -74,7 +74,7 @@
 					</h1>
 				<?php endif; ?>
 				<header class="page-header" data-active-language="<?php print $language; ?>">
-					<?php echo do_shortcode( '[searchandfilter submit_label="Show" class="language-content-filter" all_items_labels="All languages,All" fields="language,post_types" types="select,radio" post_types="video,audio,person,image,resource"]'); ?>
+					<?php echo do_shortcode( '[searchandfilter submit_label="Show" class="language-content-filter" all_items_labels="All languages,All" fields="language,post_types" types="select,radio" post_types="audio,video,person,image,resource"]'); ?>
 				</header>
 						
 	<div id="main" class="site-main">
