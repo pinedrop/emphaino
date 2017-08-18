@@ -571,7 +571,7 @@ function pinedrop_post_language_link() {
 
 function pinedrop_custom_query( $query ) {
     if ( $query->is_archive() ) {
-        $query->set( 'orderby', 'name' );
+        $query->set( 'orderby', 'post_type name' );
         $query->set( 'order', 'ASC' );
         $query->set( 'posts_per_page', 60 );
     }
