@@ -568,3 +568,11 @@ function pinedrop_post_language_link() {
   }
   return '';
 }
+
+function pinedrop_custom_query( $query ) {
+    if ( $query->is_archive() ) {
+        $query->set( 'orderby', 'post_type title' );
+        $query->set( 'order', 'ASC' );
+    }
+}
+add_filter( 'pre_get_posts', 'pinedrop_custom_query' );
