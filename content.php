@@ -7,7 +7,7 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header class="entry-header">
-		<?php if (pinedrop_post_type() != 'summary'): ?>
+		<?php if (pinedrop_post_type() != 'Summary'): ?>
 			<h4 class="entry-language"><?php print pinedrop_post_language_link(); ?></h4>
 		<?php endif; ?>
 		<h1 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php echo esc_attr( sprintf( __( 'Permalink to %s', 'emphaino' ), the_title_attribute( 'echo=0' ) ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h1>
@@ -47,7 +47,7 @@
 	<?php endif; ?>
 
 	<footer class="entry-meta">
-		<span class="post-type"><?php print ucfirst(pinedrop_post_type()); ?></span>
+		<span class="post-type"><?php print pinedrop_post_type(); ?></span>
 		<?php emphaino_posted_on(); ?>
 
 		<?php if ( ! post_password_required() && ( comments_open() || '0' != get_comments_number() ) ) : ?>

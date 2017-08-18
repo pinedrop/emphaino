@@ -556,7 +556,8 @@ add_filter('get_the_excerpt', 'pinedrop_trim_all_excerpt');
 
 function pinedrop_post_type() {
   global $post;
-  return $post->post_type;
+  $obj = get_post_type_object( $post->post_type );
+  return $obj->labels->singular_name;
 }
 
 function pinedrop_post_language_link() {

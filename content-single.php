@@ -24,7 +24,7 @@
 	</div><!-- .entry-content -->
 
 	<footer class="entry-meta">
-		<span class="post-type"><?php print ucfirst(pinedrop_post_type()); ?></span>
+		<span class="post-type"><?php print pinedrop_post_type(); ?></span>
 		<?php emphaino_posted_on(); ?>
 		<?php
 			/* translators: used between list items, there is a space after the comma */
