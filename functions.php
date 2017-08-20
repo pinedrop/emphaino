@@ -513,7 +513,7 @@ function pinedrop_video_shortcode() {
   global $post;
   foreach (get_post_meta($post->ID, 'wpcf-videofiles') as $url) {
     if (substr($url, -4) == '.mp4') {
-      $shortcode = '[videojs_video url="' . $url . '"];
+      $shortcode = '[videojs_video url="' . $url . '"]';
       break;
     }
   }
