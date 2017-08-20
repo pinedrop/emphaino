@@ -509,6 +509,17 @@ function pinedrop_get_language($query) {
 	return 'all'; // 'All languages' selected
 }
 
+function pinedrop_video_shortcode() {
+  global $post;
+  foreach (get_post_meta($post->ID, wpcf-videofiles) as $url) {
+    if (substr($url, -4) == '.mp4) {
+      $shortcode = '[videojs_video url="' . $url . '"];
+      break;
+    }
+  }
+  return $shortcode;
+}
+
 function pinedrop_excerpt_count_max() {
   global $post;
   return $post->post_type == 'summary' ? 390 : 117;
