@@ -518,7 +518,7 @@ function pinedrop_videojs_shortcode() {
   else {
     $shortcode = '[videojs_video ';
     foreach ($urls as $url) {
-      switch (substr($url, -4)) {
+      /*switch (substr($url, -4)) {
         case ".mp4":
           $shortcode .= 'url='.$url.' ';
           break;
@@ -528,7 +528,8 @@ function pinedrop_videojs_shortcode() {
         case "webm":
           $shortcode .= 'webm='.$url.' ';
           break;
-      }
+      }*/
+$shortcode .= 'url='.$url.' ';
     }
     $shortcode .= ']';
     return $shortcode;
