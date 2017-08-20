@@ -512,16 +512,13 @@ function pinedrop_get_language($query) {
 function pinedrop_videojs_shortcode($field) {
   global $post;
   $urls = get_post_meta($post->ID, $field);
-  if (count($urls) == 0 || $urls[0] == '') {
+  if (count($urls) == 0 || $urls[0] == 'wpcf-videofiles') {
     return "";
   }
   else {
     $shortcode = '[videojs_video ';
     foreach ($urls as $url) {
       switch (substr($url, -4)) {
-	case ".mp3":
-	  $shortcode .= 'url='.$url.' ';
-	  break;
         case ".mp4":
           $shortcode .= 'url='.$url.' ';
           break;
