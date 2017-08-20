@@ -509,15 +509,30 @@ function pinedrop_get_language($query) {
 	return 'all'; // 'All languages' selected
 }
 
-function pinedrop_video_shortcode() {
+function pinedrop_videojs_shortcode() {
   global $post;
-  foreach (get_post_meta($post->ID, 'wpcf-videofiles') as $url) {
-    if (substr($url, -4) == '.mp4') {
-      $shortcode = '[videojs_video url="' . $url . '"]';
-      break;
-    }
+  $urls = get_post_meta($post->ID, 'wpcf-videofiles');
+  if (count($urls) == 0) {
+    return '';
   }
-  return $shortcode;
+  else {
+    $shortcode = '[videojs_video ';
+    foreach ($urls as $url) {
+      switch (substr($url, -4)) {
+        case '.mp4':
+          $shortcode .= 'url='.$url.' ';
+          break;
+        case '.ogv':
+          $shortcode .= 'ogv='.$url.' ';
+          break;
+        case 'webm':
+          $shortcode .= 'webm='.$url.' ';
+          break;
+      }
+    }
+    $shortcode .= ']';
+    return $shortcode;
+  }
 }
 
 function pinedrop_excerpt_count_max() {
