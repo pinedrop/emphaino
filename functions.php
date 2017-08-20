@@ -529,7 +529,6 @@ function pinedrop_videojs_shortcode() {
           $shortcode .= 'webm='.$url.' ';
           break;
       }*/
-$shortcode .= $url;
     }
     $shortcode .= "]";
     return $shortcode;
