@@ -19,7 +19,7 @@
                         <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
 			<?php the_content(); ?>
                 <?php elseif ($post_type == 'avv'): ?>
-                        <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
+                        <?php if ($shortcode = pinedrop_video_shortcode()) echo do_shortcode($shortcode); ?>
                         <?php the_content(); ?>
 		<?php else: ?>
                 	<?php if( has_post_thumbnail() && 'on' == get_theme_mod( 'full_posts_feat_img', emphaino_default_settings('full_posts_feat_img') ) ): ?>

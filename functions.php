@@ -509,6 +509,22 @@ function pinedrop_get_language($query) {
 	return 'all'; // 'All languages' selected
 }
 
+function pinedrop_video_shortcode() {
+  global $post;
+  $urls = get_post_meta($post->ID, 'wpcf-videofiles');
+  if (count($urls) == 0 || $urls[0] == "") {
+    return "";
+  }
+  else {
+    $shortcode = '[video ';
+    foreach ($urls as $url) {
+      $shortcode .= substr($url, strrpos($url, ".")+1) . "=".$url." ";
+    }
+    $shortcode .= "]";
+    return $shortcode;
+  }
+}
+
 function pinedrop_videojs_shortcode() {
   global $post;
   $urls = get_post_meta($post->ID, 'wpcf-videofiles');
@@ -520,7 +536,7 @@ function pinedrop_videojs_shortcode() {
     foreach ($urls as $url) {
       switch (substr($url, -4)) {
         case ".mp4":
-          $shortcode .= 'url='.$url.' ';
+          $shortcode .= 'mp4='.$url.' ';
           break;
         case ".ogv":
           $shortcode .= 'ogv='.$url.' ';
