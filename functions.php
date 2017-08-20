@@ -509,9 +509,9 @@ function pinedrop_get_language($query) {
 	return 'all'; // 'All languages' selected
 }
 
-function pinedrop_videojs_shortcode() {
+function pinedrop_videojs_shortcode($field) {
   global $post;
-  $urls = get_post_meta($post->ID, 'wpcf-videofiles');
+  $urls = get_post_meta($post->ID, $field);
   if (count($urls) == 0 || $urls[0] == '') {
     return "";
   }
@@ -519,6 +519,9 @@ function pinedrop_videojs_shortcode() {
     $shortcode = '[videojs_video ';
     foreach ($urls as $url) {
       switch (substr($url, -4)) {
+	case ".mp3":
+	  $shortcode .= 'url='.$url.' ';
+	  break;
         case ".mp4":
           $shortcode .= 'url='.$url.' ';
           break;
