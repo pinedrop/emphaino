@@ -19,9 +19,8 @@
 			<?php the_post_thumbnail('full-width'); ?>
 		</div>
 		<?php endif; // featured image ?>
-		<?php if (get_post_type() == 'video'): ?>
-			<div>VIDEO</div>
-		<?php endif; ?>
+		<?php print get_post_type(); ?>
+		<div>VIDEO</div>
 		<?php the_content(); ?>
 		<?php wp_link_pages( array( 'before' => '<div class="page-links icon-docs">' . __( 'Pages:', 'emphaino' ), 'after' => '</div>' ) ); ?>
 	</div><!-- .entry-content -->
