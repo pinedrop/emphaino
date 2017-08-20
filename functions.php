@@ -531,6 +531,14 @@ function pinedrop_videojs_shortcode() {
       }
     }
     $shortcode .= "]";
+    if (strpos($shortcode, "url=") === FALSE) {
+      if (strpos($shortcode, "webm=") > 0) {
+        $shortcode = str_replace("webm=", "url=", $shortcode);
+      }
+      else {
+        $shortcode = str_replace("ogv=", "url=", $shortcode);
+      }
+    }
     return $shortcode;
   }
 }
