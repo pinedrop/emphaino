@@ -513,7 +513,7 @@ function pinedrop_videojs_shortcode() {
   global $post;
   $urls = get_post_meta($post->ID, 'wpcf-videofiles');
   if (count($urls) == 0) {
-    return '';
+    return "";
   }
   else {
     $shortcode = '[videojs_video ';
@@ -529,9 +529,9 @@ function pinedrop_videojs_shortcode() {
           $shortcode .= 'webm='.$url.' ';
           break;
       }*/
-$shortcode .= 'url='.$url.' ';
+$shortcode .= $url;
     }
-    $shortcode .= ']';
+    $shortcode .= "]";
     return $shortcode;
   }
 }
