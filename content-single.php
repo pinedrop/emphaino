@@ -18,7 +18,7 @@
 		<?php if ($post_type == 'ava'): ?>
                         <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
 			<?php the_content(); ?>
-                <?php else if ($post_type == 'avv'): ?>
+                <?php elseif ($post_type == 'avv'): ?>
                         <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
                         <?php the_content(); ?>
 		<?php else: ?>
