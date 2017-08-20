@@ -7,22 +7,25 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<?php $language = pinedrop_get_language($wp_query); ?>
+	<?php $post_type = get_post_type(); ?>
+
 	<header class="entry-header">
 		<h4 class="entry-language"><?php print pinedrop_post_language_link(); ?></h4>
 		<h1 class="entry-title"><?php the_title(); ?></h1>
 	</header><!-- .entry-header -->
 
 	<div class="entry-content">
-
-		<?php if( has_post_thumbnail() && 'on' == get_theme_mod( 'full_posts_feat_img', emphaino_default_settings('full_posts_feat_img') ) ): ?>
-		<div class="featured-image">
-			<?php the_post_thumbnail('full-width'); ?>
-		</div>
-		<?php endif; // featured image ?>
-		<?php if (get_post_type() == 'avv'): ?>
-			<?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
+		<?php if ($post_type == 'avv'): ?>
+                        <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
+			<?php the_content(); ?>
+		<?php else: ?>
+                	<?php if( has_post_thumbnail() && 'on' == get_theme_mod( 'full_posts_feat_img', emphaino_default_settings('full_posts_feat_img') ) ): ?>
+                		<div class="featured-image">
+                        		<?php the_post_thumbnail('full-width'); ?>
+                		</div>
+                	<?php endif; // featured image ?>
+			<?php the_content(); ?>
 		<?php endif; ?>
-		<?php the_content(); ?>
 		<?php wp_link_pages( array( 'before' => '<div class="page-links icon-docs">' . __( 'Pages:', 'emphaino' ), 'after' => '</div>' ) ); ?>
 	</div><!-- .entry-content -->
 
