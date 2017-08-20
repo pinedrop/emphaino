@@ -536,7 +536,7 @@ function pinedrop_videojs_shortcode() {
     foreach ($urls as $url) {
       switch (substr($url, -4)) {
         case ".mp4":
-          $shortcode .= 'mp4='.$url.' ';
+          $shortcode .= 'url='.$url.' ';
           break;
         case ".ogv":
           $shortcode .= 'ogv='.$url.' ';
