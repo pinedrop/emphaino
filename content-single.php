@@ -20,7 +20,7 @@
 		</div>
 		<?php endif; // featured image ?>
 		<?php if (get_post_type() == 'avv'): ?>
-			<?php do_shortcode(pinedrop_video_shortcode()); ?>	
+			<?php echo do_shortcode(pinedrop_video_shortcode()); ?>	
 		<?php endif; ?>
 		<?php the_content(); ?>
 		<?php wp_link_pages( array( 'before' => '<div class="page-links icon-docs">' . __( 'Pages:', 'emphaino' ), 'after' => '</div>' ) ); ?>
