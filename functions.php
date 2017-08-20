@@ -512,7 +512,7 @@ function pinedrop_get_language($query) {
 function pinedrop_videojs_shortcode() {
   global $post;
   $urls = get_post_meta($post->ID, 'wpcf-videofiles');
-  if (count($urls) == 0 || $urls[0] == '') {
+  if (count($urls) == 0 || $urls[0] == "") {
     return "";
   }
   else {
