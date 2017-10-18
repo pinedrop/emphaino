@@ -9,6 +9,7 @@
 	<?php $language = pinedrop_get_language($wp_query); ?>
 	<?php $post_type = get_post_type(); ?>
 
+
 	<header class="entry-header">
 		<h4 class="entry-language"><?php print pinedrop_post_language_link(); ?></h4>
 		<h1 class="entry-title"><?php the_title(); ?></h1>
