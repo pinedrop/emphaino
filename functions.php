@@ -628,3 +628,112 @@ function pinedrop_custom_query( $query ) {
     }
 }
 add_filter( 'pre_get_posts', 'pinedrop_custom_query' );
+
+function pinedrop_load_fa() 
+{
+    wp_enqueue_style( 'load-fa', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' );
+}
+add_action( 'wp_enqueue_scripts', 'pinedrop_load_fa' );
+
+/**
+ * Enqueue Pinedrop scripts and styles
+ */
+function pinedrop_scripts() {
+
+        $theme  = wp_get_theme();
+
+	if (is_single() && in_array(get_post_type(), array('ava', 'avv'))) {
+		wp_enqueue_script( 'jquery-ui-tabs' );
+	        wp_enqueue_style( 'transcripts-ui', get_template_directory_uri() . '/transcripts_ui/css/transcripts-ui.css', false, $theme->Version, 'all' );
+        	wp_enqueue_script( 'jquery.scrollTo', get_template_directory_uri() . '/transcripts_ui/js/jquery.scrollTo.min.js', array( 'jquery' ), $theme->Version, true );
+		wp_enqueue_script( 'transcripts-scroller', get_template_directory_uri() . '/transcripts_ui/js/transcripts-scroller.js', array('jquery'), $theme->Version, true);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'pinedrop_scripts' );
+
+function pinedrop_transcripts_ui_setup()
+{
+  require get_template_directory() . '/transcripts_ui/transcripts_ui.module';
+  require get_template_directory() . '/transcripts_ui/TranscriptUI.php';
+  require get_template_directory() . '/transcripts_ui/theme/transcripts_ui.theme.inc';
+}
+add_action( 'after_setup_theme', 'pinedrop_transcripts_ui_setup' );
+
+function pinedrop_query_vars($vars)
+{
+  $vars[] = "q";
+  return $vars;
+}
+add_filter('query_vars', 'pinedrop_query_vars' );
+
+function pinedrop_get_trid($filename)
+{
+  global $wpdb;
+  return $wpdb->get_var("SELECT trid FROM `transcripts_apachesolr_transcript` AS transcript LEFT JOIN `file_managed` AS file ON transcript.fid = file.fid WHERE file.filename = '" .$filename. "'");
+}
+
+function transcripts_apachesolr_transcripts_ui_transcript($ui)
+{
+  $url = get_theme_mod('pinedrop_solr_url');
+  if (!$url) return;
+
+  $url .= '/select?';
+
+  $trid = $ui->shorttrid;
+  $speakers = array_keys($ui->speakernames);
+  $tiers = array_keys($ui->tiers);
+  $options = $ui->options;
+
+  $fl = implode(",", $tiers) . "," . implode(",", $speakers) . ",id,is_trid,entity_id,fts_start,fts_end";
+
+  if ($options['term'] == '') {
+    $params = array(
+      'q' => '*:*',
+      'start' => 0,
+      'rows' => 1000, //what if transcript has more than 1000 lines??
+      'fl' => $fl,
+      'qt' => 'standard',
+    );
+  } else { //highlighting
+    $arr = array();
+    foreach ($tiers as $tier) {
+      $arr[] = $tier . ':"' . $options['term'] . '"';
+    }
+    $q = implode(" ", $arr);
+    if (!$options['hits_only']) {
+      $q .= " *:*";
+    }
+    $params = array(
+      'q.op' => 'OR',
+      'q' => $q,
+      'start' => 0,
+      'rows' => 1000, //what if transcript has more than 1000 lines??
+      'fl' => $fl,
+      'qt' => 'standard',
+      'hl' => 'true',
+      'hl.fl' => implode(' ', $tiers),
+      'hl.fragsize' => 0,
+      'hl.simple.pre' => "<mark>",
+      'hl.simple.post' => "</mark>",
+    );
+  }
+
+  $params += array(
+    'fq' => 'is_trid:'.$trid,
+    'sort' => 'fts_start asc',
+    'wt' => 'json',
+  );
+  $response = wp_remote_get($url . http_build_query($params));
+  $data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+  $tcus = $data['response']['docs'];
+  foreach ($tcus as &$tcu) {
+    $tcu['trid'] = $tcu['is_trid'];
+    $tcu['tcuid'] = $tcu['entity_id'];
+    $tcu['start'] = $tcu['fts_start'];
+    $tcu['end'] = $tcu['fts_end'];
+  }
+  $highlights = isset($data['highlighting']) ? $data['highlighting'] : NULL;
+
+  return array($tcus, $highlights);
+}

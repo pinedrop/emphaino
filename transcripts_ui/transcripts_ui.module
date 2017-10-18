@@ -1,0 +1,89 @@
+<?php
+
+function transcripts_ui_tiers()
+{
+    $raw = get_theme_mod('pinedrop_transcript_tiers');
+    $tiers = array();
+    $items = explode("\n", $raw);
+    foreach ($items as $i) {
+        $j = explode("|", trim($i));
+        $tiers[$j[0]] = $j[1];
+    }
+    return $tiers;
+}
+
+function transcripts_ui_hidden_tiers()
+{
+    return get_theme_mod('pinedrop_hidden_tiers');
+}
+
+function transcripts_ui_speaker_names()
+{
+    $raw = get_theme_mod('pinedrop_speaker_names');
+    $speakers = array();
+    $items = explode("\n", $raw);
+    foreach ($items as $i) {
+        $j = explode("|", trim($i));
+        $speakers[$j[0]] = $j[1];
+    }
+    return $speakers;
+}
+
+function transcripts_ui_ui($trid, $options)
+{
+    $ui = new TranscriptUI($trid, $options);
+    return $ui;
+}
+
+function transcripts_ui_render($ui)
+{    
+    return "<div class='transcript-container'>" .$ui->render['transcript']. "</div>";
+}
+
+function transcripts_ui_tcu($sentence, $speaker_turn, $speaker_tiers = array(), $tier_list = array())
+{
+    $sid = $sentence['tcuid'];
+    $begin = isset($sentence['start']) ? $sentence['start'] : 0;
+    $end = isset($sentence['end']) ? $sentence['end'] : 0;
+
+    $speaker_name = theme_transcripts_ui_speaker_name(array(
+        'sid' => $sid,
+        'speaker_name' => $speaker_tiers,
+        'speaker_turn' => $speaker_turn,
+    ));
+    $play_tcu = theme_transcripts_ui_play_tcu(array(
+        'linkurl' => '#tcu/'.$sid, 
+        'timecoded' => $sentence['end'] == 0 ? FALSE : TRUE, 
+        'time' => $sentence['start'],
+    ));
+    $tcu_info = "<div class='clearfix tcu-info'>" .$speaker_name."<div class='play-button'>" .$play_tcu. "</div></div>";
+    $tcu_tiers = "<div id='tiers-{$sid}' class='tiers speaker-tiers'>" .implode('', $tier_list). "</div>";
+
+    return "<li id='{$sid}' class='clearfix list-group-item transcripts-ui-tcu' data-tcuid='{$sid}' data-begin='{$begin}' data-end='{$end}'>" .$tcu_info.$tcu_tiers. "</li>";
+}
+
+function transcripts_ui_tier($tier, $value, $classes = array())
+{
+  return theme_transcripts_ui_tcu_tier(array(
+      'tier_name' => $tier,
+      'tier_text' => $value,
+      'classes' => $classes,
+  ));
+}
+
+function transcripts_ui_render_controls($ui)
+{
+    $vars = array(
+        'transcript_navigation' => theme_transcripts_ui_transcript_navigation(),
+        'transcript_searchform' => theme_transcripts_ui_transcript_searchform(array(
+            'url' => '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+        )),
+        'transcript_tiers' => theme_transcripts_ui_transcript_tiers($ui->tiers),
+        'transcript_searchinfo' => theme_transcripts_ui_transcript_searchinfo(array(
+            'q' => get_query_var('q'),
+            'n' => $ui->hitCount,
+        )),
+    ); 
+    return "<div data-transcripts-role='transcript-controls' data-transcripts-id='{$ui->trid}'>" .theme_transcripts_ui_transcript_controls($vars). "</div>";
+}
+

@@ -15,12 +15,34 @@
 	</header><!-- .entry-header -->
 
 	<div class="entry-content">
-		<?php if ($post_type == 'ava'): ?>
-                        <?php if ($shortcode = pinedrop_wpmedia_shortcode('audio', 'wpcf-audiofiles')) echo do_shortcode($shortcode); ?>
-			<?php the_content(); ?>
-                <?php elseif ($post_type == 'avv'): ?>
-                        <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
-                        <?php the_content(); ?>
+                <?php if (in_array($post_type, array('ava', 'avv'))): ?>
+                        <?php if ($post_type == 'ava'): ?>
+                                <?php if ($shortcode = pinedrop_wpmedia_shortcode('audio', 'wpcf-audiofiles')) echo do_shortcode($shortcode); ?>
+                        <?php else: ?>
+                                <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
+                        <?php endif; ?>
+
+			<?php $trid = pinedrop_get_trid(array_pop(explode('/', get_post_meta(get_the_ID(), 'wpcf-transcript', true)))); ?>
+                        <?php if ($trid): ?>
+				<?php $q = get_query_var('q'); ?>
+				<?php $options = $q ? array('term' => $q) : array(); ?>
+                                <?php $ui = transcripts_ui_ui($trid, $options); ?>
+                                <?php print(transcripts_ui_render_controls($ui)); ?>
+                                <div id="av-tabs">
+                                        <ul>
+                                                <li><a href="#tabs-about">About</a></li>
+                                                <li><a href="#tabs-transcript">Transcript</a></li>
+                                        </ul>
+                                        <div id="tabs-about">
+                                                <?php the_content(); ?>
+                                        </div>
+                                        <div id="tabs-transcript">
+                                                <?php print(transcripts_ui_render($ui)); ?>
+                                        </div>
+                                </div>
+                        <?php else: ?>
+                                <?php the_content(); ?>
+                        <?php endif; ?>
 		<?php else: ?>
                 	<?php if( has_post_thumbnail() && 'on' == get_theme_mod( 'full_posts_feat_img', emphaino_default_settings('full_posts_feat_img') ) ): ?>
                 		<div class="featured-image">

@@ -64,7 +64,62 @@ function emphaino_customize_register( $wp_customize ) {
 		)
 	);
 
+	/* Pinedrop additions */
+	$wp_customize->add_section( 'pinedrop_transcripts', array(
+		'title' => __( 'Pinedrop Transcripts', 'emphaino' ),
+		'priority' => 220,
+	));
 
+	$wp_customize->add_setting( 'pinedrop_solr_url', array(
+		'capability' => 'edit_theme_options',
+		'sanitize_callback' => 'sanitize_text_field',
+	));
+
+	$wp_customize->add_control( 'pinedrop_solr_url', array(
+		'type' => 'text',
+		'section' => 'pinedrop_transcripts',
+		'label' => __( 'SOLR URL' ),
+		'description' => __( 'This is the base URL for the SOLR server which indexes audio-video transcripts. Do not include trailing slash.' ),
+	));
+
+	$wp_customize->add_setting( 'pinedrop_transcript_tiers', array(
+		'default' => "ts_content_epo|Esperanto\nts_content_qya|Quenya\nts_content_sjn|Sindarin",
+		'capability' => 'edit_theme_options',
+		'sanitize_callback' => 'sanitize_textarea_field',
+	));
+
+	$wp_customize->add_control( 'pinedrop_transcript_tiers', array(
+		'type' => 'textarea',
+		'section' => 'pinedrop_transcripts',
+		'label' => __( 'Transcript tiers'),
+		'description' => __( 'A list of transcript tiers separated by newlines, each in the form TIER_LABEL|TIER_NAME.'),
+        ));
+
+        $wp_customize->add_setting( 'pinedrop_hidden_tiers', array(
+                'default' => "ts_content_epo",
+                'capability' => 'edit_theme_options',
+                'sanitize_callback' => 'sanitize_text_field',
+        ));
+
+        $wp_customize->add_control( 'pinedrop_hidden_tiers', array(
+                'type' => 'text',
+		'section' => 'pinedrop_transcripts',
+                'label' => __( 'Hidden tiers'),
+		'description' => __( 'Enter a whitespace separated list of tier labels that should be hidden from view by default. Everything here should be included in the list of transcript tiers.'),
+        ));
+
+        $wp_customize->add_setting( 'pinedrop_speaker_names', array(
+                'default' => "ss_speaker|Speaker",
+                'capability' => 'edit_theme_options',
+                'sanitize_callback' => 'sanitize_textarea_field',
+        ));
+
+        $wp_customize->add_control( 'pinedrop_speaker_names', array(
+                'type' => 'textarea',
+                'section' => 'pinedrop_transcripts',
+                'label' => __( 'Speaker names'),
+                'description' => __( 'Enter a list of speaker name display formats, one per line, each in the form SPEAKER_NAME_DISPLAY_ID|SPEAKER_NAME_DISPLAY_FORMAT.'),
+        ));
 
 	/* Logo image setting */
 
