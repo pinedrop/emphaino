@@ -45,23 +45,8 @@ class TranscriptUI
             }
             $speaker = implode('/', array_values($speaker_tiers));
 
-            $tier_list = array();
-            foreach (array_keys($tiers) as $tier) {
-                if (isset($sentence[$tier])) {
-                    if ($highlight) {
-                        $id = $sentence['id'];
-                        if (isset($highlights[$id][$tier])) {
-                            $hitCount++;
-                            $replace = $highlights[$id][$tier];
-                            $tier_list[] = transcripts_ui_tier($tier, $replace[0], array('hit'));
-                        } else {
-                            $tier_list[] = transcripts_ui_tier($tier, $sentence[$tier]);
-                        }
-                    } else {
-                        $tier_list[] = transcripts_ui_tier($tier, $sentence[$tier]);
-                    }
-                }
-            }
+            list($tier_list, $hits) = transcripts_ui_merge_highlights($sentence, $highlights, $tiers);
+            $hitCount += $hits;
 
             $speaker_turn = $speaker_tiers == $last_speaker_tiers ? 'same-speaker' : 'new-speaker';
             $tcus[] = transcripts_ui_tcu($sentence, $speaker_turn, $speaker_tiers, $tier_list);

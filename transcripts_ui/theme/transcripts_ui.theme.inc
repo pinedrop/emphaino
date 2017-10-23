@@ -93,3 +93,9 @@ function theme_transcripts_ui_play_tcu($vars)
     $out .= "</button>";
     return $out;
 }
+
+function theme_transcripts_ui_search_snippet($vars)
+{
+  $out = "<div class='tiers search-result'>" . implode('', $vars['tiers']) . "</div>";
+  return $out;
+}

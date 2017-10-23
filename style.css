@@ -2306,3 +2306,28 @@ body.single-summary .entry-content {
 	float: right;
 	text-transform: uppercase;
 }
+
+/* wordlist */
+div.searchinfo {
+    margin-top: 10px;
+    padding-top: 5px;
+    margin-bottom: 10px;
+    border-top: 1px solid #dddddd;
+}
+div.wordlist-letter {
+    margin-top: 1rem;
+    margin-bottom: 0.2rem;
+}
+div.navresults {
+    margin-bottom: 10px;
+}
+div.nextresults {
+    float: right;
+}
+div.search-group {
+    clear: both;
+    margin-bottom: 10px;
+}
+div.search-result {
+    margin-left: 10px;
+}

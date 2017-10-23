@@ -662,6 +662,8 @@ add_action( 'after_setup_theme', 'pinedrop_transcripts_ui_setup' );
 function pinedrop_query_vars($vars)
 {
   $vars[] = "q";
+  $vars[] = "letter";
+  $vars[] = "offset";
   return $vars;
 }
 add_filter('query_vars', 'pinedrop_query_vars' );
@@ -672,11 +674,15 @@ function pinedrop_get_trid($filename)
   return $wpdb->get_var("SELECT trid FROM `transcripts_apachesolr_transcript` AS transcript LEFT JOIN `file_managed` AS file ON transcript.fid = file.fid WHERE file.filename = '" .$filename. "'");
 }
 
+function pinedrop_get_pid($trid)
+{
+  global $wpdb;
+  return $wpdb->get_var("SELECT post_parent FROM `wp_posts` AS post LEFT JOIN `file_managed` AS file ON file.filename = post.post_title LEFT JOIN `transcripts_apachesolr_transcript` AS transcript ON file.fid = transcript.fid WHERE transcript.trid = " .$trid);
+}
 function transcripts_apachesolr_transcripts_ui_transcript($ui)
 {
   $url = get_theme_mod('pinedrop_solr_url');
   if (!$url) return;
-
   $url .= '/select?';
 
   $trid = $ui->shorttrid;
@@ -724,7 +730,7 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
     'wt' => 'json',
   );
   $response = wp_remote_get($url . http_build_query($params));
-  $data = json_decode( wp_remote_retrieve_body( $response ), true );
+  $data = json_decode(wp_remote_retrieve_body($response), true );
 
   $tcus = $data['response']['docs'];
   foreach ($tcus as &$tcu) {
@@ -737,3 +743,116 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
 
   return array($tcus, $highlights);
 }
+
+function pinedrop_wordlist_shortcode($atts) {
+  $current = '//' . $_SERVER['HTTP_HOST'] . strtok($_SERVER["REQUEST_URI"],'?');
+  $url = get_theme_mod('pinedrop_solr_url');
+  if (!$url) return;
+  $url .= '/select?';
+
+  $a = shortcode_atts(array(
+    'lang' => 'eng',
+    'src' => 'lexical',
+    'q' => '',
+    'letters' => '',
+    'transform' => '',
+  ), $atts);
+  $lang = 'ts_content_' .$a['lang'];
+  $src = 'ts_' .$a['src'];
+  $letters = array_map('trim', explode(',', $a['letters']));
+  $uppercase = $a['transform'] == 'uppercase' ? true : false;
+
+  $q = $a['q'];
+  if (!$q) {
+    $q = get_query_var('q');
+  }
+  if (!$q) {
+    $params = array(
+      'q' => '*:*',
+      'fq' => $lang. ':*',
+      'start' => 0,
+      'rows' => 0,
+      'wt' => 'json',
+      'facet' => 'true',
+      'facet.field' => $src,
+      'facet.mincount' => 1,
+      'facet.sort' => 'index',
+      'facet.limit' => -1,
+    );
+    $response = wp_remote_get($url . http_build_query($params));
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    $x = 0;
+    $words = array();
+    $words[] = '<div class="wordlist-letter"><a name="letter-' .$letters[$x]. '">' .$letters[$x]. "</a></div>";
+    $facets = $data['facet_counts']['facet_fields'][$src];
+    for ($i=0; $i<count($facets); $i+=2) {
+      while ($x < count($letters) && strpos($facets[$i], $letters[$x]) !== 0) {
+        $x++;
+        $words[] = '<div class="wordlist-letter"><a name="letter-' .$letters[$x]. '">' .$letters[$x]. "</a></div>";
+      }
+      $words[] = '<div class="wordlist-item">' .str_replace(":", " ", ($uppercase ? strtoupper($facets[$i]) : $facets[$i])). ' (<a href="' .$current. '?q=' .$facets[$i]. '&offset=1">' .$facets[$i+1]. ')</a></div>';
+    }
+    while ($x < count($letters)) {
+      $x++;
+      $words[] = '<div class="wordlist-letter"><a name="letter-' .$letters[$x]. '">' .$letters[$x]. "</a></div>";
+    } 
+    $nav = "<p>";
+    foreach ($letters as $letter) {
+      $nav .= '<a href="#letter-' .$letter. '">' .$letter. '</a> ';
+    }
+    $nav .= "</p>";
+    return '<div class="transcripts-ui-wordlist">' .$nav.implode("", $words). '</div>';
+  }
+  else {
+    $tiers = transcripts_ui_tiers();
+    $fl = implode(",", array_keys($tiers)) . ",id,is_trid,entity_id,fts_start,fts_end";
+    $offset = get_query_var("offset");
+    $rows = 10;
+    $params = array(
+      'q' => $src.':' .$q,
+      'fq' => $lang. ':*',
+      'start' => $offset-1,
+      'rows' => $rows,
+      'fl' => $fl,
+      'wt' => 'json',
+      'group' => 'true',
+      'group.ngroups' => 'true',
+      'group.field' => 'is_trid',
+      'hl' => 'true',
+      'hl.fl' => implode(' ', array_keys($tiers)),
+      'hl.fragsize' => 0,
+      'hl.simple.pre' => "<mark>",
+      'hl.simple.post' => "</mark>",
+    );
+    $response = wp_remote_get($url . http_build_query($params));
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+    $highlights = isset($data['highlighting']) ? $data['highlighting'] : NULL;
+    $matches = $data['grouped']['is_trid']['matches'];
+    $ngroups = $data['grouped']['is_trid']['ngroups'];
+    $result = "";
+    foreach ($data['grouped']['is_trid']['groups'] as $group) {
+      $trid = $group['groupValue'];
+      $post = get_post(pinedrop_get_pid($trid));
+      $numFound = $group['doclist']['numFound'];
+      $postLink = '<a href="' .get_permalink($post).'/?q='.$q. '">' .$numFound. '</a>';
+      $result .= '<div class="search-group"><strong>' .$post->post_title. '</strong> (' .$postLink. ')';
+      foreach ($group['doclist']['docs'] as $doc) {
+        list($tier_list, $hits) = transcripts_ui_merge_highlights($doc, $highlights, $tiers);
+        $result .= theme_transcripts_ui_search_snippet(array(
+          'tiers' => $tier_list,
+        ));
+        $result .= '</div>';
+      }
+    }
+    $first = $offset;
+    $next = $offset + $rows < $ngroups + 1 ? true : false;
+    $last = $next ? $offset+$rows-1 : $ngroups;
+    $backlink = '<div class="backtolist"><a href="' .$current. '">← Back to list</a></div>';
+    $searchinfo = "<div class='searchinfo'>Search: <em>$q</em>. $matches total hits in $ngroups transcripts.</div>"; 
+    $prevresults = $offset > $rows ? '<div class="backresults"><a href="' .$current. '?q=' .$q. '&offset=' .($offset-$rows). '">← Back</a></div>' : '';
+    $nextresults = $next ? '<div class="nextresults"><a href="' .$current. '?q=' .$q. '&offset=' .($last+1). '">More →</a></div>' : '';
+    $resultsnav = '<div class="navresults">' .$nextresults.$prevresults. '</div>';
+    return '<div class="transcripts-ui-wordlist">' .$backlink.$searchinfo.$resultsnav.$result. '</div>';
+  }
+}
+add_shortcode('wordlist', 'pinedrop_wordlist_shortcode');

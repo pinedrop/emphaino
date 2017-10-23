@@ -87,3 +87,27 @@ function transcripts_ui_render_controls($ui)
     return "<div data-transcripts-role='transcript-controls' data-transcripts-id='{$ui->trid}'>" .theme_transcripts_ui_transcript_controls($vars). "</div>";
 }
 
+function transcripts_ui_merge_highlights($sentence, $highlights, $tiers)
+{
+    $highlight = $highlights !== NULL ? TRUE : FALSE;
+    $hits = 0;
+
+    $tier_list = array();
+    foreach (array_keys($tiers) as $tier) {
+        if (isset($sentence[$tier])) {
+            if ($highlight) {
+                $id = $sentence['id'];
+                if (isset($highlights[$id][$tier])) {
+                    $hits++;
+                    $replace = $highlights[$id][$tier];
+                    $tier_list[] = transcripts_ui_tier($tier, $replace[0], array('hit'));
+                } else {
+                    $tier_list[] = transcripts_ui_tier($tier, $sentence[$tier]);
+                }
+            } else {
+                $tier_list[] = transcripts_ui_tier($tier, $sentence[$tier]);
+            }
+        }
+    }
+    return array($tier_list, $hits); 
+}
