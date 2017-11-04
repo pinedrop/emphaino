@@ -102,6 +102,7 @@ button.play-tcu span {
 .speaker-tiers {
     margin: 0 10rem 0.3rem 0.5rem;;
     padding: 0.1em;
+    text-align: left;
 }
 .scroller ul {
     list-style: none;
