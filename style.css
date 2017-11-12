@@ -2265,6 +2265,9 @@ article.comment footer br {
 
 
 /* PINEDROP ADDITIONS */
+div.tiers {
+    text-align: left;
+}
 
 /* hide 'All post types' radio button on home page */
 header[data-active-language='none'] div > ul > li:nth-child(2) ul > li:first-child,
