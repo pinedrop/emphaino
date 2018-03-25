@@ -2334,3 +2334,24 @@ div.search-group {
 div.search-result {
     margin-left: 10px;
 }
+/* hide russian tier for all languages but tundra nenets */
+.language-northern-khanty #tier-selector-wrapper [data-tier=ts_content_igt_ru],
+.language-northern-khanty [data-tier=ts_content_igt_ru] {
+	display: none;
+}
+.language-even #tier-selector-wrapper [data-tier=ts_content_igt_ru],
+.language-even [data-tier=ts_content_igt_ru] {
+        display: none;
+}
+.language-forest-enets #tier-selector-wrapper [data-tier=ts_content_igt_ru],
+.language-forest-enets [data-tier=ts_content_igt_ru] {
+        display: none;
+}
+.language-tundra-yukaghir #tier-selector-wrapper [data-tier=ts_content_igt_ru],
+.language-tundra-yukaghir [data-tier=ts_content_igt_ru] {
+        display: none;
+}
+.language-udihe #tier-selector-wrapper [data-tier=ts_content_igt_ru],
+.language-udihe [data-tier=ts_content_igt_ru] {
+        display: none;
+}
