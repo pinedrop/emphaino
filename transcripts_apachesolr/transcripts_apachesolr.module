@@ -46,9 +46,9 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
   $solr = transcripts_apachesolr_get_solr();
 
   //field aliasing (Solr 4.x): http://wiki.apache.org/solr/CommonQueryParameters#Field_alias
-  //$fl = implode(",", $tiers) . ",id,trid:is_trid,tcuid:entity_id,speaker:ss_speaker,start:fts_start,end:fts_end";
+  //$fl = implode(",", $tiers) . ",id,trid:is_pid,tcuid:entity_id,speaker:ss_speaker,start:fts_start,end:fts_end";
 
-  $fl = implode(",", $tiers) . "," . implode(",", $speakers) . ",id,is_trid,entity_id,fts_start,fts_end";
+  $fl = implode(",", $tiers) . "," . implode(",", $speakers) . ",id,is_pid,entity_id,fts_start,fts_end";
 
   if ($options['term'] == '') {
     $params = array(
@@ -83,7 +83,7 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
   }
   $query = apachesolr_drupal_query('transcripts_apachesolr', $params, 'fts_start asc', '', $solr);
   if ($trid) {
-    $query->addFilter("is_trid", $trid);
+    $query->addFilter("is_pid", $trid);
   }
   //see http://drupalconnect.com/blog/steve/creating-custom-sorts-apache-solr
   $query->setAvailableSort('fts_start', array(
@@ -94,7 +94,7 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
 
   $tcus = $response->response->docs;
   foreach ($tcus as &$tcu) {
-    $tcu->trid = $tcu->is_trid;
+    $tcu->trid = $tcu->is_pid;
     $tcu->tcuid = $tcu->entity_id;
     $tcu->start = $tcu->fts_start;
     $tcu->end = $tcu->fts_end;
@@ -238,7 +238,7 @@ function transcripts_apachesolr_apachesolr_query_prepare($query)
  */
 function transcripts_apachesolr_apachesolr_query_alter($query)
 {
-  $query->addParams(array('fl' => array('is_trid', 'entity_id', 'fts_start', 'fts_end')));
+  $query->addParams(array('fl' => array('is_pid', 'entity_id', 'fts_start', 'fts_end')));
   $tiers = array_keys(transcripts_ui_tiers());
   if (count($tiers) > 0) {
     $qf = array();

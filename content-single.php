@@ -23,7 +23,7 @@
                                 <?php if ($shortcode = pinedrop_videojs_shortcode()) echo do_shortcode($shortcode); ?>
                         <?php endif; ?>
 
-			<?php $trid = pinedrop_get_trid(array_pop(explode('/', get_post_meta(get_the_ID(), 'wpcf-transcript', true)))); ?>
+			<?php $trid = get_the_ID(); ?>
                         <?php if ($trid): ?>
 				<?php $q = get_query_var('q'); ?>
 				<?php $options = $q ? array('term' => $q) : array(); ?>

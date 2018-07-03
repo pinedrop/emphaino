@@ -668,17 +668,6 @@ function pinedrop_query_vars($vars)
 }
 add_filter('query_vars', 'pinedrop_query_vars' );
 
-function pinedrop_get_trid($filename)
-{
-  global $wpdb;
-  return $wpdb->get_var("SELECT trid FROM `transcripts_apachesolr_transcript` AS transcript LEFT JOIN `file_managed` AS file ON transcript.fid = file.fid WHERE file.filename = '" .$filename. "'");
-}
-
-function pinedrop_get_pid($trid)
-{
-  global $wpdb;
-  return $wpdb->get_var("SELECT post_parent FROM `wp_posts` AS post LEFT JOIN `file_managed` AS file ON file.filename = post.post_title LEFT JOIN `transcripts_apachesolr_transcript` AS transcript ON file.fid = transcript.fid WHERE transcript.trid = " .$trid);
-}
 function transcripts_apachesolr_transcripts_ui_transcript($ui)
 {
   $url = get_theme_mod('pinedrop_solr_url');
@@ -690,7 +679,7 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
   $tiers = array_keys($ui->tiers);
   $options = $ui->options;
 
-  $fl = implode(",", $tiers) . "," . implode(",", $speakers) . ",id,is_trid,entity_id,fts_start,fts_end";
+  $fl = implode(",", $tiers) . "," . implode(",", $speakers) . ",id,is_pid,entity_id,fts_start,fts_end";
 
   if ($options['term'] == '') {
     $params = array(
@@ -725,7 +714,7 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
   }
 
   $params += array(
-    'fq' => 'is_trid:'.$trid,
+    'fq' => 'is_pid:'.$trid,
     'sort' => 'fts_start asc',
     'wt' => 'json',
   );
@@ -734,7 +723,7 @@ function transcripts_apachesolr_transcripts_ui_transcript($ui)
 
   $tcus = $data['response']['docs'];
   foreach ($tcus as &$tcu) {
-    $tcu['trid'] = $tcu['is_trid'];
+    $tcu['trid'] = $tcu['is_pid'];
     $tcu['tcuid'] = $tcu['entity_id'];
     $tcu['start'] = $tcu['fts_start'];
     $tcu['end'] = $tcu['fts_end'];
@@ -805,7 +794,7 @@ function pinedrop_wordlist_shortcode($atts) {
   }
   else {
     $tiers = transcripts_ui_tiers();
-    $fl = implode(",", array_keys($tiers)) . ",id,is_trid,entity_id,fts_start,fts_end";
+    $fl = implode(",", array_keys($tiers)) . ",id,is_pid,entity_id,fts_start,fts_end";
     $offset = get_query_var("offset");
     $rows = 10;
     $params = array(
@@ -817,7 +806,7 @@ function pinedrop_wordlist_shortcode($atts) {
       'wt' => 'json',
       'group' => 'true',
       'group.ngroups' => 'true',
-      'group.field' => 'is_trid',
+      'group.field' => 'is_pid',
       'hl' => 'true',
       'hl.fl' => implode(' ', array_keys($tiers)),
       'hl.fragsize' => 0,
@@ -827,12 +816,12 @@ function pinedrop_wordlist_shortcode($atts) {
     $response = wp_remote_get($url . http_build_query($params));
     $data = json_decode(wp_remote_retrieve_body($response), true);
     $highlights = isset($data['highlighting']) ? $data['highlighting'] : NULL;
-    $matches = $data['grouped']['is_trid']['matches'];
-    $ngroups = $data['grouped']['is_trid']['ngroups'];
+    $matches = $data['grouped']['is_pid']['matches'];
+    $ngroups = $data['grouped']['is_pid']['ngroups'];
     $result = "";
-    foreach ($data['grouped']['is_trid']['groups'] as $group) {
+    foreach ($data['grouped']['is_pid']['groups'] as $group) {
       $trid = $group['groupValue'];
-      $post = get_post(pinedrop_get_pid($trid));
+      $post = get_post($trid);
       $numFound = $group['doclist']['numFound'];
       $postLink = '<a href="' .get_permalink($post).'/?q='.$q. '">' .$numFound. '</a>';
       $result .= '<div class="search-group"><strong>' .$post->post_title. '</strong> (' .$postLink. ')';
